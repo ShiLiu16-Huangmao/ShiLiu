@@ -1,0 +1,32 @@
+[
+  {
+    "file": "images/cat-01.jpg",
+    "date": "2026-05-01",
+    "name": "小花"
+  },
+  {
+    "file": "images/cat-02.jpg",
+    "date": "2026-05-02",
+    "name": "团团"
+  },
+  {
+    "file": "images/cat-03.jpg",
+    "date": "2026-05-03",
+    "name": "咪咪"
+  },
+  {
+    "file": "images/cat-04.jpg",
+    "date": "2026-05-04",
+    "name": "糯米"
+  },
+  {
+    "file": "images/cat-05.jpg",
+    "date": "2026-05-05",
+    "name": "橘子"
+  },
+  {
+    "file": "images/cat-06.jpg",
+    "date": "2026-05-06",
+    "name": "奶茶"
+  }
+]

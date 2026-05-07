@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>猫咪相册</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <h1 class="site-title">🐱 猫咪相册</h1>
+  <p class="site-desc">记录每一只遇见的小猫咪</p>
+</header>
+
+<main class="gallery" id="gallery">
+  <!-- gallery.js 动态渲染 -->
+</main>
+
+<footer class="site-footer">
+  <p>猫咪相册 · 用 ❤️ 记录</p>
+</footer>
+
+<!-- 灯箱 -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button class="lightbox-close" id="lightbox-close" aria-label="关闭">&times;</button>
+  <button class="lightbox-prev" id="lightbox-prev" aria-label="上一张">&lsaquo;</button>
+  <button class="lightbox-next" id="lightbox-next" aria-label="下一张">&rsaquo;</button>
+  <img class="lightbox-img" id="lightbox-img" src="" alt="">
+  <p class="lightbox-caption" id="lightbox-caption"></p>
+</div>
+
+<script src="gallery.js"></script>
+</body>
+</html>

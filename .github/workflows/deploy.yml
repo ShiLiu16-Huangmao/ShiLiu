@@ -1,0 +1,96 @@
+name: 部署猫咪相册
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'images/**'
+      - 'photos.json'
+      - 'upload.html'
+      - 'index.html'
+      - 'style.css'
+      - 'gallery.js'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 记录旧照片数量，用于判断是否有新增
+      - name: 记录变更前照片数
+        id: old_count
+        run: |
+          OLD=$(node -e "try{console.log(require('./photos.json').length)}catch(e){console.log(0)}")
+          echo "value=$OLD" >> $GITHUB_OUTPUT
+
+      - name: 生成相册数据
+        run: node generate-gallery.js
+
+      # 计算新增数量
+      - name: 计算新增照片数
+        id: diff
+        run: |
+          NEW=$(node -e "try{console.log(require('./photos.json').length)}catch(e){console.log(0)}")
+          OLD=${{ steps.old_count.outputs.value }}
+          DIFF=$((NEW - OLD))
+          echo "new_count=$DIFF" >> $GITHUB_OUTPUT
+          echo "新增 $DIFF 张照片"
+
+      - name: 提交 photos.json 变更
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add photos.json
+          if git diff --staged --quiet; then
+            echo "photos.json 无变化，跳过提交"
+            echo "committed=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "更新相册数据 [skip ci]"
+            git push
+            echo "committed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 配置 Pages
+        uses: actions/configure-pages@v4
+
+      - name: 上传 Pages 产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: 部署到 GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
+
+      # ========== 微信推送通知 ==========
+      # 仅当有新照片且配置了推送 Token 时发送
+      - name: 发送微信通知
+        if: steps.diff.outputs.new_count > 0
+        run: node send-notification.js
+        env:
+          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+          SERVERCHAN_SENDKEY: ${{ secrets.SERVERCHAN_SENDKEY }}
+          SITE_URL: ${{ steps.deploy.outputs.page_url }}
+          NEW_COUNT: ${{ steps.diff.outputs.new_count }}

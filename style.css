@@ -1,0 +1,309 @@
+/* ========================================
+   猫咪相册 — 全局样式
+   设计方向：苹果官网风格 · 极简 · 白底 · 手机优先
+   ======================================== */
+
+/* --- CSS 变量 --- */
+:root {
+  --color-bg: #ffffff;
+  --color-text: #1d1d1f;
+  --color-text-secondary: #86868b;
+  --color-text-tertiary: #aeaeaf;
+  --color-border: #e5e5e7;
+  --color-overlay: rgba(0, 0, 0, 0.85);
+  --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+    "Microsoft YaHei", "Helvetica Neue", sans-serif;
+  --max-width: 1200px;
+  --gap: 16px;
+  --radius: 12px;
+  --transition: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* --- Reset --- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-stack);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* --- Header --- */
+.site-header {
+  text-align: center;
+  padding: 48px 20px 32px;
+}
+
+.site-title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--color-text);
+}
+
+.site-desc {
+  margin-top: 8px;
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  font-weight: 400;
+}
+
+/* --- Gallery Grid --- */
+.gallery {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gap);
+  padding: 0 var(--gap) 48px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* 平板：2 列 */
+@media (min-width: 640px) {
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 桌面：3 列 */
+@media (min-width: 1024px) {
+  .site-header {
+    padding: 64px 20px 40px;
+  }
+
+  .site-title {
+    font-size: 2.5rem;
+  }
+
+  .gallery {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 0 20px 64px;
+  }
+}
+
+/* 宽屏：4 列 */
+@media (min-width: 1400px) {
+  .gallery {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* --- Gallery Card --- */
+.gallery-card {
+  cursor: pointer;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #f5f5f7;
+  transition: transform var(--transition), box-shadow var(--transition);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gallery-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.gallery-card:active {
+  transform: scale(0.98);
+}
+
+.gallery-card-img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  background: #f0f0f2;
+  transition: opacity 0.4s ease;
+}
+
+.gallery-card-img[loading] {
+  opacity: 0;
+}
+
+.gallery-card-img.loaded {
+  opacity: 1;
+}
+
+.gallery-card-info {
+  padding: 12px 14px;
+}
+
+.gallery-card-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.gallery-card-date {
+  margin-top: 2px;
+  font-size: 0.8rem;
+  color: var(--color-text-tertiary);
+}
+
+/* --- Footer --- */
+.site-footer {
+  text-align: center;
+  padding: 24px 20px;
+  font-size: 0.85rem;
+  color: var(--color-text-tertiary);
+  border-top: 1px solid var(--color-border);
+}
+
+/* --- Lightbox --- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--color-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition), visibility var(--transition);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+
+.lightbox.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox-img {
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 6px;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: opacity 0.2s ease;
+}
+
+.lightbox-caption {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+/* 关闭按钮 */
+.lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  z-index: 1001;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 左右箭头 */
+.lightbox-prev,
+.lightbox-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 1.8rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  z-index: 1001;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lightbox-prev { left: 12px; }
+.lightbox-next { right: 12px; }
+
+.lightbox-prev:hover,
+.lightbox-next:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+@media (min-width: 768px) {
+  .lightbox-close {
+    top: 24px;
+    right: 24px;
+  }
+
+  .lightbox-prev { left: 24px; }
+  .lightbox-next { right: 24px; }
+}
+
+/* --- Empty State --- */
+.gallery-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--color-text-secondary);
+  font-size: 1.1rem;
+}
+
+.gallery-empty-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 16px;
+}
+
+/* --- 图片加载骨架屏 --- */
+@keyframes shimmer {
+  0%   { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+.gallery-card-skeleton {
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(90deg, #f0f0f2 25%, #e5e5e7 50%, #f0f0f2 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
